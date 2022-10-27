@@ -1,0 +1,15 @@
+# gradle
+/.gradle/
+
+# ignore eclipse conf
+/.classpath
+/.project
+/.settings/
+# ignore intellij conf
+/*.iml
+/.idea/
+
+# build artefacts
+/out/
+/bin/
+/build/
