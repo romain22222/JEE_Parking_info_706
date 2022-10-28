@@ -1,16 +1,13 @@
-package fr.usmb.tp.negro.sahili.ticket.ejb;
-
-import java.util.LinkedList;
-import java.util.List;
+package fr.usmb.tp.negro.salihi.ticket.ejb;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
-import fr.usmb.tp.negro.sahili.ticket.jpa.Mesure;
-import fr.usmb.tp.negro.sahili.ticket.jpa.Ticket;
+import fr.usmb.tp.negro.salihi.ticket.jpa.Ticket;
+
+import java.util.List;
 
 @Stateless
 @LocalBean
@@ -29,6 +26,11 @@ public class TicketEJB {
 
     public Ticket findTicket(long id) {
         return em.find(Ticket.class, id);
+    }
+    public List<Ticket> findAllTicket() {
+        return em
+                .createQuery("SELECT t FROM Ticket t ORDER BY t.dateSortie ASC", Ticket.class)
+                .getResultList();
     }
 
 /*    public List<Mesure> findMesures(String piece) {

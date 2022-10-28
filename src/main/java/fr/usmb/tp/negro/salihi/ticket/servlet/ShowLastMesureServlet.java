@@ -1,7 +1,6 @@
-package fr.usmb.tp.negro.sahili.ticket.servlet;
+package fr.usmb.tp.negro.salihi.ticket.servlet;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -10,14 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fr.usmb.tp.negro.sahili.ticket.ejb.MesureEJB;
-import fr.usmb.tp.negro.sahili.ticket.jpa.Mesure;
+import fr.usmb.tp.negro.salihi.ticket.ejb.MesureEJB;
+import fr.usmb.tp.negro.salihi.ticket.jpa.Mesure;
 
 /**
  * Servlet implementation class AddMesureServlet
  */
-@WebServlet("/ShowMesuresServlet")
-public class ShowMesuresServlet extends HttpServlet {
+@WebServlet("/ShowLastMesureServlet")
+public class ShowLastMesureServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	// injection de la reference de l'ejb
@@ -27,7 +26,7 @@ public class ShowMesuresServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ShowMesuresServlet() {
+    public ShowLastMesureServlet() {
         super();
     }
 
@@ -38,11 +37,11 @@ public class ShowMesuresServlet extends HttpServlet {
 		// recuperation et parsing des parametres de la requete
 		String piece = request.getParameter("piece");
 		// appel de l'ejb
-		List<Mesure> l = ejb.findMesures(piece);		
-		// ajout de la liste de mesures dans la requete
-		request.setAttribute("mesures",l);
+		Mesure m = ejb.findLastMesure(piece);		
+		// ajout de la mesure dans la requete
+		request.setAttribute("mesure",m);
 		// transfert a la JSP d'affichage
-		request.getRequestDispatcher("/showMesures.jsp").forward(request, response);
+		request.getRequestDispatcher("/showTicket.jsp").forward(request, response);
 	}
 
 	/**

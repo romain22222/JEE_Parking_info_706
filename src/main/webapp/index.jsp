@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>   
+<%@ page contentType="text/html; charset=ISO-8859-1"
+		 pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -10,6 +10,9 @@
 	  <h2>Prendre un ticket</h2>
 	  <form method="get" action="CreateTicket">
 		<input type="submit" name="create"  value="Créer un ticket">
+	  </form>
+	  <form method="get" action="VoirAdmin">
+		  <input type="submit" name="adminView"  value="Admin View">
 	  </form>
 	</body>
 </html>

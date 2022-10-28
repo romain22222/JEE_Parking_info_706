@@ -1,6 +1,7 @@
-package fr.usmb.tp.negro.sahili.ticket.servlet;
+package fr.usmb.tp.negro.salihi.ticket.servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -9,14 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fr.usmb.tp.negro.sahili.ticket.ejb.MesureEJB;
-import fr.usmb.tp.negro.sahili.ticket.jpa.Mesure;
+import fr.usmb.tp.negro.salihi.ticket.ejb.MesureEJB;
+import fr.usmb.tp.negro.salihi.ticket.jpa.Mesure;
 
 /**
  * Servlet implementation class AddMesureServlet
  */
-@WebServlet("/ShowMesureServlet")
-public class ShowMesureServlet extends HttpServlet {
+@WebServlet("/ShowLastMesuresServlet")
+public class ShowLastMesuresServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	// injection de la reference de l'ejb
@@ -26,7 +27,7 @@ public class ShowMesureServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ShowMesureServlet() {
+    public ShowLastMesuresServlet() {
         super();
     }
 
@@ -34,14 +35,12 @@ public class ShowMesureServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// recuperation et parsing des parametres de la requete
-		long id = Long.parseLong(request.getParameter("id"));
 		// appel de l'ejb
-		Mesure m = ejb.findMesure(id);		
-		// ajout de la mesure dans la requete
-		request.setAttribute("mesure",m);
+		List<Mesure> l = ejb.getLastMesures();		
+		// ajout de la liste de mesures dans la requete
+		request.setAttribute("mesures",l);
 		// transfert a la JSP d'affichage
-		request.getRequestDispatcher("/showTicket.jsp").forward(request, response);
+		request.getRequestDispatcher("/showMesures.jsp").forward(request, response);
 	}
 
 	/**

@@ -1,6 +1,7 @@
-package fr.usmb.tp.negro.sahili.ticket.servlet;
+package fr.usmb.tp.negro.salihi.ticket.servlet;
 
-import java.io.IOException;
+import fr.usmb.tp.negro.salihi.ticket.ejb.TicketEJB;
+import fr.usmb.tp.negro.salihi.ticket.jpa.Ticket;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -8,25 +9,23 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import fr.usmb.tp.negro.sahili.ticket.ejb.MesureEJB;
-import fr.usmb.tp.negro.sahili.ticket.jpa.Mesure;
+import java.io.IOException;
+import java.util.List;
 
 /**
- * Servlet implementation class AddMesureServlet
+ * Servlet implementation class CreateTicket
  */
-@WebServlet("/ShowLastMesureServlet")
-public class ShowLastMesureServlet extends HttpServlet {
+@WebServlet("/VoirAdmin")
+public class VoirAdmin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	// injection de la reference de l'ejb
+
 	@EJB
-	private MesureEJB ejb;
-       
+	private TicketEJB ejb;
+
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ShowLastMesureServlet() {
+    public VoirAdmin() {
         super();
     }
 
@@ -34,14 +33,9 @@ public class ShowLastMesureServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// recuperation et parsing des parametres de la requete
-		String piece = request.getParameter("piece");
-		// appel de l'ejb
-		Mesure m = ejb.findLastMesure(piece);		
-		// ajout de la mesure dans la requete
-		request.setAttribute("mesure",m);
-		// transfert a la JSP d'affichage
-		request.getRequestDispatcher("/showTicket.jsp").forward(request, response);
+		List<Ticket> ts = ejb.findAllTicket();
+		request.setAttribute("tickets",ts);
+		request.getRequestDispatcher("/showTickets.jsp").forward(request, response);
 	}
 
 	/**

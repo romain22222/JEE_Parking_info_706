@@ -1,4 +1,4 @@
-package fr.usmb.tp.negro.sahili.ticket.jpa;
+package fr.usmb.tp.negro.salihi.ticket.jpa;
 
 public enum MoyenDePaiement {
     CB,

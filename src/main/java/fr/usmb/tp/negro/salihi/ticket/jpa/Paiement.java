@@ -1,8 +1,7 @@
-package fr.usmb.tp.negro.sahili.ticket.jpa;
+package fr.usmb.tp.negro.salihi.ticket.jpa;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
@@ -40,5 +39,9 @@ public class Paiement implements Serializable {
     @Override
     public String toString() {
         return "Paiement123";
+    }
+
+    public boolean stillAvailable() {
+        return getDatePaiement().getTime() - new Date().getTime() <= 900000.0;
     }
 }

@@ -1,4 +1,4 @@
-package fr.usmb.tp.negro.sahili.ticket.jpa;
+package fr.usmb.tp.negro.salihi.ticket.jpa;
 
 import java.io.Serializable;
 import java.util.Date;

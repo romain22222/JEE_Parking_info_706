@@ -1,4 +1,4 @@
-package fr.usmb.tp.negro.sahili.ticket.ejb;
+package fr.usmb.tp.negro.salihi.ticket.ejb;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import fr.usmb.tp.negro.sahili.ticket.jpa.Mesure;
+import fr.usmb.tp.negro.salihi.ticket.jpa.Mesure;
 
 @Stateless
 @LocalBean
@@ -44,8 +44,7 @@ public class MesureEJB {
 	 * @return mesure correspondant a l'identifiant ou null
 	 */
 	public Mesure findMesure(long id) {
-		Mesure m = em.find(Mesure.class, id);
-		return m;
+		return em.find(Mesure.class, id);
 	}
 	
 	/**

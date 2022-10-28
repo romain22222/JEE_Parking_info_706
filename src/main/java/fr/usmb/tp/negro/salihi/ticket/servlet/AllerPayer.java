@@ -1,7 +1,7 @@
-package fr.usmb.tp.negro.sahili.ticket.servlet;
+package fr.usmb.tp.negro.salihi.ticket.servlet;
 
-import java.io.IOException;
-import java.util.List;
+import fr.usmb.tp.negro.salihi.ticket.ejb.TicketEJB;
+import fr.usmb.tp.negro.salihi.ticket.jpa.Ticket;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -9,25 +9,22 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import fr.usmb.tp.negro.sahili.ticket.ejb.MesureEJB;
-import fr.usmb.tp.negro.sahili.ticket.jpa.Mesure;
+import java.io.IOException;
 
 /**
- * Servlet implementation class AddMesureServlet
+ * Servlet implementation class CreateTicket
  */
-@WebServlet("/ShowLastMesuresServlet")
-public class ShowLastMesuresServlet extends HttpServlet {
+@WebServlet("/AllerPayer")
+public class AllerPayer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	// injection de la reference de l'ejb
+
 	@EJB
-	private MesureEJB ejb;
-       
+	private TicketEJB ejb;
+
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ShowLastMesuresServlet() {
+    public AllerPayer() {
         super();
     }
 
@@ -35,12 +32,9 @@ public class ShowLastMesuresServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// appel de l'ejb
-		List<Mesure> l = ejb.getLastMesures();		
-		// ajout de la liste de mesures dans la requete
-		request.setAttribute("mesures",l);
-		// transfert a la JSP d'affichage
-		request.getRequestDispatcher("/showMesures.jsp").forward(request, response);
+		Ticket t = ejb.findTicket(Long.parseLong(request.getParameter("ticket")));
+		request.setAttribute("ticket",t);
+		request.getRequestDispatcher("/bornePaiement.jsp").forward(request, response);
 	}
 
 	/**
