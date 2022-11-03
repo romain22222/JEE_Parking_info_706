@@ -1,5 +1,6 @@
 package fr.usmb.tp.negro.salihi.ticket.servlet;
 
+import fr.usmb.tp.negro.salihi.ticket.ejb.PaiementEJB;
 import fr.usmb.tp.negro.salihi.ticket.ejb.TicketEJB;
 import fr.usmb.tp.negro.salihi.ticket.jpa.Ticket;
 
@@ -19,7 +20,10 @@ public class AllerBorneSortie extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private TicketEJB ejb;
+	private TicketEJB ejbT;
+
+	@EJB
+	private PaiementEJB ejbP;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -32,7 +36,7 @@ public class AllerBorneSortie extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Ticket t = ejb.findTicket(Long.parseLong(request.getParameter("ticket")));
+		Ticket t = ejbT.findTicket(Long.parseLong(request.getParameter("ticket")));
 		request.setAttribute("ticket",t);
 		request.getRequestDispatcher("/borneSortie.jsp").forward(request, response);
 	}

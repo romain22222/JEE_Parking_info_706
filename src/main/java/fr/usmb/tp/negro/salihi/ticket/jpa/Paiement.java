@@ -9,18 +9,6 @@ public class Paiement implements Serializable {
     @Id @GeneratedValue
     private long id;
 
-    public Date getDatePaiement() {
-        return datePaiement;
-    }
-
-    public double getMontantPaye() {
-        return montantPaye;
-    }
-
-    public MoyenDePaiement getMoyenDePaiement() {
-        return moyenDePaiement;
-    }
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date datePaiement;
 
@@ -36,9 +24,16 @@ public class Paiement implements Serializable {
         this.moyenDePaiement = moyenDePaiement;
     }
 
-    @Override
-    public String toString() {
-        return "Paiement123";
+    public Date getDatePaiement() {
+        return datePaiement;
+    }
+
+    public double getMontantPaye() {
+        return montantPaye;
+    }
+
+    public MoyenDePaiement getMoyenDePaiement() {
+        return moyenDePaiement;
     }
 
     public boolean stillAvailable() {

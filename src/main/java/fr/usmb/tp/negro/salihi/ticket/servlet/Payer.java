@@ -2,6 +2,7 @@ package fr.usmb.tp.negro.salihi.ticket.servlet;
 
 import fr.usmb.tp.negro.salihi.ticket.ejb.PaiementEJB;
 import fr.usmb.tp.negro.salihi.ticket.ejb.TicketEJB;
+import fr.usmb.tp.negro.salihi.ticket.jpa.MoyenDePaiement;
 import fr.usmb.tp.negro.salihi.ticket.jpa.Ticket;
 
 import javax.ejb.EJB;
@@ -11,23 +12,25 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Servlet implementation class CreateTicket
  */
-@WebServlet("/AllerPayer")
-public class AllerPayer extends HttpServlet {
+@WebServlet("/Payer")
+public class Payer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
 	private TicketEJB ejbT;
+
 	@EJB
 	private PaiementEJB ejbP;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AllerPayer() {
+    public Payer() {
         super();
     }
 
@@ -36,7 +39,13 @@ public class AllerPayer extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Ticket t = ejbT.findTicket(Long.parseLong(request.getParameter("ticket")));
+		if (!Objects.equals(request.getParameter("moyen"), "")) {
+			MoyenDePaiement m = MoyenDePaiement.valueOf(request.getParameter("moyen"));
+			double amount = Double.parseDouble(request.getParameter("amount").replace(',', '.'));
+			ejbT.payTicket(t, amount, m, ejbP);
+		}
 		request.setAttribute("ticket",t);
+		request.setAttribute("noMoyen", Objects.equals(request.getParameter("moyen"), ""));
 		request.getRequestDispatcher("/bornePaiement.jsp").forward(request, response);
 	}
 

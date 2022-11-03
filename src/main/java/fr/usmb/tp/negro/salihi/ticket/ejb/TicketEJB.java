@@ -5,8 +5,12 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import fr.usmb.tp.negro.salihi.ticket.jpa.MoyenDePaiement;
+import fr.usmb.tp.negro.salihi.ticket.jpa.Paiement;
 import fr.usmb.tp.negro.salihi.ticket.jpa.Ticket;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Stateless
@@ -19,7 +23,7 @@ public class TicketEJB {
     }
 
     public Ticket addTicket() {
-        Ticket t = new Ticket();
+        Ticket t = new Ticket(new Date());
         em.persist(t);
         return t;
     }
@@ -28,9 +32,22 @@ public class TicketEJB {
         return em.find(Ticket.class, id);
     }
     public List<Ticket> findAllTicket() {
-        return em
-                .createQuery("SELECT t FROM Ticket t ORDER BY t.dateSortie ASC", Ticket.class)
+        // TODO a delete quand plus de prob
+        em.createQuery("DELETE FROM Ticket").executeUpdate();
+        em.createQuery("DELETE FROM Paiement").executeUpdate();
+        em.joinTransaction();
+        // // //
+        List<Long> ids = em
+                .createQuery("SELECT t.id FROM Ticket t ORDER BY t.dateSortie ASC", Long.class)
                 .getResultList();
+        List<Ticket> validTickets = new ArrayList<>();
+        ids.listIterator().forEachRemaining(id -> validTickets.add(this.findTicket(id)));
+        return validTickets;
+    }
+    public void payTicket(Ticket t, double amount, MoyenDePaiement m, PaiementEJB ejbP) {
+        Ticket newT = em.find(Ticket.class, t.getId());
+        Paiement p = ejbP.addPaiement(amount, m);
+        newT.payer(p);
     }
 
 /*    public List<Mesure> findMesures(String piece) {

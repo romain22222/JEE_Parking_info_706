@@ -10,7 +10,7 @@
 	</head>
 	<body>
 	<table>
-		<tr><th>Id</th><th>Date Entrée</th><th>Date Sortie</th><th>Payé</th><th>Somme payée</th></tr>
+		<tr><th>Id</th><th>Date Entrée</th><th>Date Sortie</th><th>Payé</th><th>Somme payée</th><th>Somme à payer</th><th>Cout total</th></tr>
 		<%--@elvariable id="tickets" type="java.util.List"--%>
 		<c:forEach items="${tickets}" var="t" >
 			<tr>
@@ -19,6 +19,8 @@
 				<td><fmt:formatDate value="${ t.dateSortie }" pattern="dd/MM/yyyy HH:mm:ss" /></td>
 				<td>${ t.lastPaiement() == null ? "NON" : "OUI" }</td>
 				<td><fmt:formatNumber pattern="#0.00" value="${ t.sommePaiement() }" /></td>
+				<td><fmt:formatNumber pattern="#0.00" value="${ t.calcCostToPay() }" /></td>
+				<td><fmt:formatNumber pattern="#0.00" value="${ t.sommePaiement() + t.calcCostToPay() }" /></td>
 			</tr>
 		</c:forEach>
 	</table>

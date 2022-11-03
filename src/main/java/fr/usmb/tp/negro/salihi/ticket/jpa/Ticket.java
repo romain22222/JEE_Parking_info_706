@@ -1,16 +1,54 @@
 package fr.usmb.tp.negro.salihi.ticket.jpa;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.persistence.*;
-
 @Entity
 public class Ticket implements Serializable {
     @Id @GeneratedValue
     private long id;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateEntree;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateSortie;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "ticket_id")
+    private List<Paiement> arrayPaiement;
+
+    public Ticket() {}
+
+    public Ticket(Date dateEntree) {
+        this.dateEntree = dateEntree;
+        this.arrayPaiement = new ArrayList<>();
+    }
+    public long getId() {
+        return this.id;
+    }
+
+    public boolean fullyPayed() {
+        return lastPaiement() != null && lastPaiement().stillAvailable();
+    }
+
+    public double calcCostToPay() {
+        return (
+                new Date().getTime() - (
+                lastPaiement() == null
+                        ? dateEntree.getTime()
+                        : lastPaiement().getDatePaiement().getTime()
+                )
+        ) / 3000000.0;
+    }
+
+    public void payer(Paiement p) {
+        arrayPaiement.add(p);
+    }
 
     public Date getDateEntree() {
         return dateEntree;
@@ -25,33 +63,20 @@ public class Ticket implements Serializable {
     }
 
     public Paiement lastPaiement() {
-        return paiementArray.size() > 0 ? paiementArray.get(paiementArray.size()-1) : null;
+        return arrayPaiement.size() > 0 ? arrayPaiement.get(arrayPaiement.size()-1) : null;
     }
 
     public double sommePaiement() {
         AtomicReference<Double> somme = new AtomicReference<>(0.0);
-        paiementArray.forEach((paiement -> somme.updateAndGet(v -> v + paiement.getMontantPaye())));
+        arrayPaiement.forEach((paiement -> somme.updateAndGet(v -> v + paiement.getMontantPaye())));
         return somme.get();
     }
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEntree;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateSortie;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Paiement> paiementArray;
-
-    public Ticket() {
-        this.dateEntree = new Date();
-        this.paiementArray = new ArrayList<>();
+    public void setArrayPaiement(List<Paiement> allPaiement) {
+        arrayPaiement = allPaiement;
     }
 
-    public long getId() {
-        return this.id;
-    }
-
-    public boolean fullyPayed() {
-        return lastPaiement() != null && lastPaiement().stillAvailable();
+    public List<Paiement> getArrayPaiement() {
+        return arrayPaiement;
     }
 }

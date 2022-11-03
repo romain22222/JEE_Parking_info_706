@@ -1,4 +1,4 @@
-<jsp:useBean id="ticket" scope="application" class="fr.usmb.tp.negro.salihi.ticket.jpa.Ticket"/>
+<%--@elvariable id="ticket" type="fr.usmb.tp.negro.salihi.ticket.jpa.Ticket"--%>
 <%@ page contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt" %>
