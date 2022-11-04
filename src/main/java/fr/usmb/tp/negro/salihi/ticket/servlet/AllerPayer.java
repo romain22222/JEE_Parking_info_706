@@ -1,6 +1,5 @@
 package fr.usmb.tp.negro.salihi.ticket.servlet;
 
-import fr.usmb.tp.negro.salihi.ticket.ejb.PaiementEJB;
 import fr.usmb.tp.negro.salihi.ticket.ejb.TicketEJB;
 import fr.usmb.tp.negro.salihi.ticket.jpa.Ticket;
 
@@ -21,8 +20,6 @@ public class AllerPayer extends HttpServlet {
 
 	@EJB
 	private TicketEJB ejbT;
-	@EJB
-	private PaiementEJB ejbP;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -37,6 +34,7 @@ public class AllerPayer extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Ticket t = ejbT.findTicket(Long.parseLong(request.getParameter("ticket")));
 		request.setAttribute("ticket",t);
+		request.setAttribute("error", "entryPayout");
 		request.getRequestDispatcher("/bornePaiement.jsp").forward(request, response);
 	}
 

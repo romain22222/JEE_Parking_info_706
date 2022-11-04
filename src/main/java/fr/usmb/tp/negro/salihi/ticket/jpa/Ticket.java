@@ -1,13 +1,13 @@
 package fr.usmb.tp.negro.salihi.ticket.jpa;
 
+import fr.usmb.tp.negro.salihi.ticket.Constantes;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-
 @Entity
 public class Ticket implements Serializable {
     @Id @GeneratedValue
@@ -38,13 +38,13 @@ public class Ticket implements Serializable {
     }
 
     public double calcCostToPay() {
-        return (
+        return ((
                 new Date().getTime() - (
                 lastPaiement() == null
                         ? dateEntree.getTime()
                         : lastPaiement().getDatePaiement().getTime()
                 )
-        ) / 3000000.0;
+        ) / (60000./ Constantes.TIME_MULT)) * Constantes.COUT_MINUTE;
     }
 
     public void payer(Paiement p) {
@@ -55,7 +55,7 @@ public class Ticket implements Serializable {
         return dateEntree;
     }
 
-public Date getDateSortie() {
+    public Date getDateSortie() {
         return dateSortie;
     }
 

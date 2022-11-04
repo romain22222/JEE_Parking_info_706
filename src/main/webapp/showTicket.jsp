@@ -23,4 +23,8 @@
 		  <input type="submit" name="create"  value="Aller à la sortie">
 	  </form>
 	</body>
+	<br><br>
+	<form method="get" action="VoirAdmin">
+		<input type="submit" name="adminView"  value="Admin View">
+	</form>
 </html>

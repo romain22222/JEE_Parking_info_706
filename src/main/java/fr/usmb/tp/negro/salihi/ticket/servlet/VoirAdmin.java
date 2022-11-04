@@ -1,5 +1,6 @@
 package fr.usmb.tp.negro.salihi.ticket.servlet;
 
+import fr.usmb.tp.negro.salihi.ticket.Constantes;
 import fr.usmb.tp.negro.salihi.ticket.ejb.TicketEJB;
 import fr.usmb.tp.negro.salihi.ticket.jpa.Ticket;
 
@@ -35,6 +36,7 @@ public class VoirAdmin extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Ticket> ts = ejb.findAllTicket();
 		request.setAttribute("tickets",ts);
+		request.setAttribute("c", new Constantes());
 		request.getRequestDispatcher("/showTickets.jsp").forward(request, response);
 	}
 

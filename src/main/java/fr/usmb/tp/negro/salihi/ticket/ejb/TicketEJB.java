@@ -32,11 +32,6 @@ public class TicketEJB {
         return em.find(Ticket.class, id);
     }
     public List<Ticket> findAllTicket() {
-        // TODO a delete quand plus de prob
-        em.createQuery("DELETE FROM Ticket").executeUpdate();
-        em.createQuery("DELETE FROM Paiement").executeUpdate();
-        em.joinTransaction();
-        // // //
         List<Long> ids = em
                 .createQuery("SELECT t.id FROM Ticket t ORDER BY t.dateSortie ASC", Long.class)
                 .getResultList();
@@ -44,10 +39,14 @@ public class TicketEJB {
         ids.listIterator().forEachRemaining(id -> validTickets.add(this.findTicket(id)));
         return validTickets;
     }
-    public void payTicket(Ticket t, double amount, MoyenDePaiement m, PaiementEJB ejbP) {
+    public void payTicket(Ticket t, double amount, MoyenDePaiement m) {
         Ticket newT = em.find(Ticket.class, t.getId());
-//        Paiement p = ejbP.addPaiement(amount, m);
         newT.payer(new Paiement(amount, m));
+    }
+
+    public void ticketSortie(Ticket t) {
+        Ticket newT = em.find(Ticket.class, t.getId());
+        newT.setDateSortie(new Date());
     }
 
 /*    public List<Mesure> findMesures(String piece) {

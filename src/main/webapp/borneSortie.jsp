@@ -19,5 +19,9 @@
     <input type="hidden" name="ticket" value="${ticket.id}">
     <input type="submit" name="checkTicket"  value="Sortir">
   </form>
+<br><br>
+<form method="get" action="VoirAdmin">
+  <input type="submit" name="adminView"  value="Admin View">
+</form>
 </body>
 </html>

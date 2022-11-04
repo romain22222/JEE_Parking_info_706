@@ -1,5 +1,7 @@
 package fr.usmb.tp.negro.salihi.ticket.jpa;
 
+import fr.usmb.tp.negro.salihi.ticket.Constantes;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -37,6 +39,6 @@ public class Paiement implements Serializable {
     }
 
     public boolean stillAvailable() {
-        return getDatePaiement().getTime() - new Date().getTime() <= 900000.0;
+        return new Date().getTime() - getDatePaiement().getTime() <= 900000 / Constantes.TIME_MULT;
     }
 }

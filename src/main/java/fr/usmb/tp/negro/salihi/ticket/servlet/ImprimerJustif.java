@@ -14,8 +14,8 @@ import java.io.IOException;
 /**
  * Servlet implementation class CreateTicket
  */
-@WebServlet("/SortirParking")
-public class SortirParking extends HttpServlet {
+@WebServlet("/ImprimerJustif")
+public class ImprimerJustif extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
@@ -24,7 +24,7 @@ public class SortirParking extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SortirParking() {
+    public ImprimerJustif() {
         super();
     }
 
@@ -33,17 +33,8 @@ public class SortirParking extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Ticket t = ejbT.findTicket(Long.parseLong(request.getParameter("ticket")));
-		String path;
-		if (t.fullyPayed()){
-			path = "/exterieur.jsp";
-			ejbT.ticketSortie(t);
-		}
-		else {
-			path = "/bornePaiement.jsp";
-			request.setAttribute("error", t.lastPaiement() == null ? "notPayed" : "expired");
-		}
 		request.setAttribute("ticket",t);
-		request.getRequestDispatcher(path).forward(request, response);
+		request.getRequestDispatcher("/justif.jsp").forward(request, response);
 	}
 
 	/**

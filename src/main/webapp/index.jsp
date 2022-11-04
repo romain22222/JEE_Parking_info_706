@@ -11,6 +11,7 @@
 	  <form method="get" action="CreateTicket">
 		<input type="submit" name="create"  value="Créer un ticket">
 	  </form>
+	  <br><br>
 	  <form method="get" action="VoirAdmin">
 		  <input type="submit" name="adminView"  value="Admin View">
 	  </form>

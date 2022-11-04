@@ -1,6 +1,5 @@
 package fr.usmb.tp.negro.salihi.ticket.servlet;
 
-import fr.usmb.tp.negro.salihi.ticket.ejb.PaiementEJB;
 import fr.usmb.tp.negro.salihi.ticket.ejb.TicketEJB;
 import fr.usmb.tp.negro.salihi.ticket.jpa.MoyenDePaiement;
 import fr.usmb.tp.negro.salihi.ticket.jpa.Ticket;
@@ -24,9 +23,6 @@ public class Payer extends HttpServlet {
 	@EJB
 	private TicketEJB ejbT;
 
-	@EJB
-	private PaiementEJB ejbP;
-
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -42,10 +38,11 @@ public class Payer extends HttpServlet {
 		if (!Objects.equals(request.getParameter("moyen"), "")) {
 			MoyenDePaiement m = MoyenDePaiement.valueOf(request.getParameter("moyen"));
 			double amount = Double.parseDouble(request.getParameter("amount").replace(',', '.'));
-			ejbT.payTicket(t, amount, m, ejbP);
+			ejbT.payTicket(t, amount, m);
+			t = ejbT.findTicket(Long.parseLong(request.getParameter("ticket")));
 		}
 		request.setAttribute("ticket",t);
-		request.setAttribute("noMoyen", Objects.equals(request.getParameter("moyen"), ""));
+		request.setAttribute("error", Objects.equals(request.getParameter("moyen"), "") ? "noMoyen" : "");
 		request.getRequestDispatcher("/bornePaiement.jsp").forward(request, response);
 	}
 
