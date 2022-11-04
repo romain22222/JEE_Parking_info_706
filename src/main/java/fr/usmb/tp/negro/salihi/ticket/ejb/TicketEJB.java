@@ -46,8 +46,8 @@ public class TicketEJB {
     }
     public void payTicket(Ticket t, double amount, MoyenDePaiement m, PaiementEJB ejbP) {
         Ticket newT = em.find(Ticket.class, t.getId());
-        Paiement p = ejbP.addPaiement(amount, m);
-        newT.payer(p);
+//        Paiement p = ejbP.addPaiement(amount, m);
+        newT.payer(new Paiement(amount, m));
     }
 
 /*    public List<Mesure> findMesures(String piece) {

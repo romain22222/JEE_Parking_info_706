@@ -3,6 +3,7 @@ package fr.usmb.tp.negro.salihi.ticket.jpa;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,7 +20,7 @@ public class Ticket implements Serializable {
     private Date dateSortie;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "ticket_id")
+    @JoinColumn(name = "ID")
     private List<Paiement> arrayPaiement;
 
     public Ticket() {}
@@ -54,7 +55,7 @@ public class Ticket implements Serializable {
         return dateEntree;
     }
 
-    public Date getDateSortie() {
+public Date getDateSortie() {
         return dateSortie;
     }
 

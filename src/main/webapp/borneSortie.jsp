@@ -12,7 +12,7 @@
 <p>
   id : ${ ticket.id } <br>
   Arrivé à : <fmt:formatDate value="${ ticket.dateEntree }" pattern="dd/MM/yyyy HH:mm:ss" /> <br>
-  Payé : ${ ticket.lastPaiement() ? ticket.lastPaiement() : "NON" } <br>
+  Payé : ${ ticket.lastPaiement() != null ? ticket.lastPaiement() : "NON" } <br>
 </p>
 
   <form method="get" action="SortirParking">
