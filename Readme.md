@@ -1,6 +1,6 @@
 # INFO 706, TP JEE représentation d'un parking #
 
-Ceci est en bref un parking cher de Paris dont vous pouvez modifier le cout minute et le passage du temps afin de faire payer plus vos utilisateurs.
+Ceci est en bref un parking cher de Paris dont vous pouvez modifier le coût minute et le passage du temps afin de faire payer plus vos utilisateurs.
 
 Un ticket comprendra :
 - un id (identifiant unique autogénéré)
