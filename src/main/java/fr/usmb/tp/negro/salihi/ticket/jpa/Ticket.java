@@ -27,6 +27,7 @@ public class Ticket implements Serializable {
 
     public Ticket(Date dateEntree) {
         this.dateEntree = dateEntree;
+        this.dateSortie = null;
         this.arrayPaiement = new ArrayList<>();
     }
     public long getId() {

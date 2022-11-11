@@ -41,4 +41,9 @@ public class Paiement implements Serializable {
     public boolean stillAvailable() {
         return new Date().getTime() - getDatePaiement().getTime() <= 900000 / Constantes.TIME_MULT;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s€ le %s", montantPaye, datePaiement.toString());
+    }
 }

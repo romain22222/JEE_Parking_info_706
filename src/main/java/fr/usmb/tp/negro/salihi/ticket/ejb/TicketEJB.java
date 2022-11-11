@@ -33,7 +33,7 @@ public class TicketEJB {
     }
     public List<Ticket> findAllTicket() {
         List<Long> ids = em
-                .createQuery("SELECT t.id FROM Ticket t ORDER BY t.dateSortie ASC", Long.class)
+                .createQuery("SELECT t.id FROM Ticket t ORDER BY t.dateEntree ASC", Long.class)
                 .getResultList();
         List<Ticket> validTickets = new ArrayList<>();
         ids.listIterator().forEachRemaining(id -> validTickets.add(this.findTicket(id)));
