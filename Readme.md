@@ -1,52 +1,75 @@
-# Un exemple minimaliste d'une application JavaEE 8 (web profile) #
+# INFO 706, TP JEE représentation d'un parking #
 
-Pour faire simple l'application consiste à faire des mesures de température dans une maison connectée (le tout très simplifié).
+Ceci est en bref un parking cher de Paris dont vous pouvez modifier le cout minute et le passage du temps afin de faire payer plus vos utilisateurs.
 
-Une mesure comprendra :
+Un ticket comprendra :
 - un id (identifiant unique autogénéré)
-- une pièce (nom de la pièce où la mesure a été faite)
-- une température (en degré celsius)
-- une date de prise de la mesure
+- une date d'entrée et de sortie (donnant les moments d'utilisation du dit ticket)
+- une liste de paiements (les diférents paiements effectués par l'utilisateur)
+
+Un paiement comprendra :
+- un id (identifiant unique autogénéré)
+- une date de paiement (quand le paiement a été effectué)
+- un montant payé
+- un moyen de paiement
+
+Le moyen de paiement est un type énuméré comprenant 5 valeurs possibles, toutes correspondant à un moyen de payer différent
 
 On peut :
-- ajouter des mesures,
-- consulter les mesures (à partir de l'id de la mesure ou du nom de la pièce)
+- créer un nouveau ticket
+- payer le ticket
+- imprimer un justificatif du ticket
+- entrer - sortir du parking
+- calculer le prix à payer pour un ticket donné, en fonction du temps passé dans le parking et des précédents paiements
+- Savoir si le ticket est payé
+- Savoir si le paiement du ticket a expiré
 
-Les mesures sont stockées dans une base de données. On y accède à travers une entité (JPA).
+Les tickets et les paiements sont stockées dans une base de données. On y accède à travers une entité (JPA).
 
-Un EJB session sans état (stateless) sert de façade pour les opérations de création/recherche des mesures.
+Un EJB session sans état (stateless) sert de façade pour les opérations de création/recherche des tickets et des paiements.
 
-Un client WEB permet de réaliser l'ensemble des opérations : ajout d'une mesure, recherche et affichage des mesures.
-Ce client comporte trois pages JSP et plusieurs servlet (1 par opération). La connexion au bean session se fait en local dans les servlet sans passer par une interface.
+Un client WEB permet de réaliser l'ensemble des opérations cités au-dessus.
+Ce client comporte sept pages JSP et plusieurs servlet (1 par opération distincte). La connexion au bean session se fait en local dans les servlet sans passer par une interface.
+
+Il y a aussi une classe Constantes, permettant à votre guise de modifier le passage du temps ainsi que le coût minute du parking.
 
 ## Organisation du projet ##
 
 ### Partie JPA ###
 
-Il y a un seul objet persistant (stockage des mesures de temperature) defini à l'aide de la classe `Mesure` :  
-- <a href="src/main/java/fr/usmb/m2isc/mesure/jpa/Mesure.java" >src/main/java/fr/usmb/m2isc/mesure/jpa/Mesure.java</a> (implantation de l'entité _Mesure_ (entité JPA))
-- <a href="src/main/resources/META-INF/persistence.xml" >META-INF/persistence.xml</a> (descripteur standard JPA)
+Il y a deux objets persistants defini à l'aide des classes `Ticket` et `Paiement` :  
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/jpa/Ticket.java" >Ticket</a> (implantation de l'entité _Ticket_ (entité JPA))
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/jpa/Paiement.java" >Paiement</a> (implantation de l'entité _Paiement_ (entité JPA))
+- <a href="src/main/resources/META-INF/persistence.xml" >Fichier persistence</a> (descripteur standard JPA)
 
 ### Partie EBJ ###
 
-L'accès aux mesures se fait au travers d'un EJB (Enterprise JavaBean) sans état (et utilisable sans interface - cf. annotation `@LocalBean`) :  
-- <a href="src/main/java/fr/usmb/m2isc/mesure/ejb/MesureEJB.java" >src/main/java/fr/usmb/m2isc/mesure/ejb/MesureEJB.java</a> EJB sans état (Stateless)
-- src/main/resources/META-INF/ejb-jar.xml (descripteur standard pour les Enterprise Java Beans -- optionnel dans les dernières versions de javaEE)
+L'accès aux tickets et aux paiements se font au travers d'un EJB (Enterprise JavaBean) sans état (et utilisable sans interface - cf. annotation `@LocalBean`) pour chaque entité :  
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/ejb/TicketEJB.java" >TicketEJB</a> EJB sans état (Stateless)
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/ejb/PaiementEJB.java" >PaiementEJB</a> EJB sans état (Stateless)
 
 ### Partie WEB  ###
 
-Différentes servlet permettent permettent d'executer les actions (ajout de mesures, recherche de mesures existantes (par id ou par pièce)) :  
-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/AddMesureServlet.java" >src/main/java/fr/usmb/m2isc/mesure/servlet/AddMesureServlet.java</a> (ajout d'une mesure)
-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/ShowMesureServlet.java" >src/main/java/fr/usmb/m2isc/mesure/servlet/ShowMesureServlet.java</a> (affichage d'une mesure à partir de son id)
-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/ShowMesuresServlet.java" >src/main/java/fr/usmb/m2isc/mesure/servlet/ShowMesuresServlet.java</a> (affichage des mesures d'une pièce)
-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/ShowLastMesureServlet.java" >src/main/java/fr/usmb/m2isc/mesure/servlet/ShowLastMesureServlet.java</a> (affichage de la dernière mesure d'une pièce)
-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/ShowLastMesuresServlet.java" >src/main/java/fr/usmb/m2isc/mesure/servlet/ShowLastMesuresServlet.java</a> (affichage de la dernière mesure de chaque pièce)
-- src/main/webapp/WEB-INF/web.xml (descripteur standard de l'application Web -- optionnel dans les dernières versions de JavaEE)
+Différentes servlet permettent permettent d'executer les actions :  
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/AllerBorneSortie.java" >AllerBorneSortie</a> (Aller à la borne de sortie)
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/AllerPayer.java" >AllerPayer</a> (Aller payer à la borne de paiement)
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/ContinuerStationnement.java" >ContinuerStationnement</a> (Quitter la borne de paiement car on a pas fini de stationner)
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/CreateTicket.java" >CreateTicket</a> (Créer un ticket et entrer dans le parking)
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/ImprimerJustif.java" >ImprimerJustif</a> (Impression d'un justificatif)
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/MenuExt.java" >MenuExt</a> (Sortir du parking (ou au moins tenter de...))
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/Payer.java" >Payer</a> (Payer le ticket)
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/SortirParking.java" >SortirParking</a> (Aller à la sortie du parking)
+- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/VoirAdmin.java" >VoirAdmin</a> (Voir le menu administrateur (menu qui affiche l'état de tous les tickets et des informations complémentaires))
 
-L'affichage des mesures se fait à la fin des servlet en redirigeant les requêtes vers des pages JSP (JavaServer Pages) :  
-- <a href="src/main/webapp/showMesure.jsp" >src/main/webapp/showMesure.jsp</a> (affichage d'une mesure)
-- <a href="src/main/webapp/showMesures.jsp" >src/main/webapp/showMesures.jsp</a> (affichage d'une liste de mesures)
-- <a href="src/main/webapp/index.jsp" >src/main/webapp/index.jsp</a> (page d'accueil)
+L'affichage des tickets se fait à la fin des servlet en redirigeant les requêtes vers des pages JSP (JavaServer Pages) :  
+- <a href="src/main/webapp/bornePaiement.jsp" >bornePaiement</a> (représente la borne de paiement)
+- <a href="src/main/webapp/borneSortie.jsp" >borneSortie</a> (représente la borne de sortie)
+- <a href="src/main/webapp/exterieur.jsp" >exterieur</a> (représente l'extérieur du parking)
+- <a href="src/main/webapp/index.jsp" >index</a> (représente la borne d'entrée du parking)
+- <a href="src/main/webapp/justif.jsp" >justif</a> (représente un justificatif de ticket)
+- <a href="src/main/webapp/showTicket.jsp" >showTicket</a> (représente le ticket hors des bornes (par exemple quand on a sa voiture de garée et qu'on part marcher dehors))
+- <a href="src/main/webapp/showTickets.jsp" >showTickets</a> (Partie administrateur : permet de voir tous les tickets enregistrés ainsi que leurs états (payé, sorti, expiré, ...))
+
 
 ## Fonctionnement ##
 
@@ -59,35 +82,54 @@ Dans l'EJB on utilise l'annotation `@PersistenceContext` pour récupérer auprè
 ```java
 @Stateless
 @LocalBean
-public class MesureEJB {
+public class TicketEJB {
 	@PersistenceContext
 	private EntityManager em;
 ```
 
-L'_entity manager_ est ensuite utilisé dans les méthodes de l'EJB pour ajouter des mesures :  
+L'_entity manager_ est ensuite utilisé dans les méthodes de l'EJB pour ajouter des tickets :  
 
 ```java
-	public Mesure addMesure(String piece, double val) {
-		Mesure m = new Mesure(piece, val);
-		em.persist(m);
-		return m;
-	}
+	public Ticket addTicket() {
+        Ticket t = new Ticket(new Date());
+        em.persist(t);
+        return t;
+    }
 ```
 
-où retrouver des mesures dans la base :  
+ou retrouver des tickets dans la base :  
 
 ```java
-	public Mesure findMesure(long id) {
-		Mesure m = em.find(Mesure.class, id);
-		return m;
-	}
+	public Ticket findTicket(long id) {
+        return em.find(Ticket.class, id);
+    }
 ```
 ```java
-	public List<Mesure> findMesures(String piece) {
-		TypedQuery<Mesure> rq = em.createQuery("SELECT m FROM Mesure m WHERE m.piece = :piece ORDER BY m.dateMesure ASC", Mesure.class);
-		rq.setParameter("piece", piece);
-		return rq.getResultList();
-	}
+	public List<Ticket> findAllTicket() {
+        List<Long> ids = em
+        .createQuery("SELECT t.id FROM Ticket t ORDER BY t.dateEntree ASC", Long.class)
+        .getResultList();
+        List<Ticket> validTickets = new ArrayList<>();
+        ids.listIterator().forEachRemaining(id -> validTickets.add(this.findTicket(id)));
+        return validTickets;
+    }
+```
+
+ou payer le ticket :
+
+```java
+    public void payTicket(Ticket t, double amount, MoyenDePaiement m) {
+        Ticket newT = em.find(Ticket.class, t.getId());
+        newT.payer(new Paiement(amount, m));
+    }
+```
+
+ou sortir avec le ticket :
+```java
+    public void ticketSortie(Ticket t) {
+        Ticket newT = em.find(Ticket.class, t.getId());
+        newT.setDateSortie(new Date());
+    }
 ```
 
 ### Utilisation de l'EJB dans les servlet ###
@@ -95,27 +137,34 @@ où retrouver des mesures dans la base :
 Dans les _servlet_ on utilise l'annotation `@EJB` pour obtenir une référence de l'_EJB session_ :
 
 ```java
-@WebServlet("/CreerCompteServlet")
-public class CreerCompteServlet extends HttpServlet {
+@WebServlet("/Payer")
+public class Payer extends HttpServlet {
 	@EJB
-	private Operation ejb;
+	private TicketEJB ejb;
 ```
 
 Pour l'affichage, dans les servlet, on ajoute dans la requete http les objets java à afficher et on redirige les requêtes vers les pages JSP :  
 
 ```java
-// appel de l'ejb
-List<Mesure> l = ejb.findMesures(piece);		
-// ajout de la resure dans la requete
-request.setAttribute("mesures",l);
-// transfert a la JSP d'affichage
-request.getRequestDispatcher("/showMesures.jsp").forward(request, response);
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        Ticket t=ejbT.findTicket(Long.parseLong(request.getParameter("ticket")));
+        if(!Objects.equals(request.getParameter("moyen"),"")){
+        	MoyenDePaiement m=MoyenDePaiement.valueOf(request.getParameter("moyen"));
+ 	       double amount=Double.parseDouble(request.getParameter("amount").replace(',','.'));
+ 	       ejbT.payTicket(t,amount,m);
+ 	       t=ejbT.findTicket(Long.parseLong(request.getParameter("ticket")));
+        }
+        request.setAttribute("ticket",t);
+        request.setAttribute("error",Objects.equals(request.getParameter("moyen"),"")?"noMoyen":"");
+        request.getRequestDispatcher("/bornePaiement.jsp").forward(request,response);
+    }
 ```
 
 
 ## Packaging ##
 
-Comme c'est une application ciblant le profil web de la spécification JavaEE 8, tout (Servlet/JSP/EJB/entité JPA) peut être empaqueté dans la même archive web (Thermo.war).
+Comme c'est une application ciblant le profil web de la spécification JavaEE 8, tout (Servlet/JSP/EJB/entité JPA) peut être empaqueté dans la même archive web (INFO706TP.war).
 
 ### L'application WEB est entièrement packagée dans un fichier d'archive war ###
 
@@ -123,24 +172,37 @@ Les resources web (pages html, JSP, feuilles de styles CSS, etc. sont ajoutées 
 
 Deux dossiers dossiers spécifiques, `META-INF` et `WEB-INF` dans l'archive war permettent de configurer l'application web et gérer les parties en java.
 <pre>
-Thermo.war
-  |-- <a href="src/main/webapp/index.jsp" >index.jsp</a> (page d'accueil -- formulaires html permettant de d'ajouter ou rechercher des mesures)
-  |-- <a href="src/main/webapp/showMesure.jsp" >showMesure.jsp</a> (affichage d'une mesure)
-  |-- <a href="src/main/webapp/showMesures.jsp" >showMesures.jsp</a> (affichage d'une liste de mesures)
+INFO706TP.war
+  |-- <a href="src/main/webapp/bornePaiement.jsp" >bornePaiement</a> (représente la borne de paiement)
+  |-- <a href="src/main/webapp/borneSortie.jsp" >borneSortie</a> (représente la borne de sortie)
+  |-- <a href="src/main/webapp/exterieur.jsp" >exterieur</a> (représente l'extérieur du parking)
+  |-- <a href="src/main/webapp/index.jsp" >index</a> (représente la borne d'entrée du parking)
+  |-- <a href="src/main/webapp/justif.jsp" >justif</a> (représente un justificatif de ticket)
+  |-- <a href="src/main/webapp/showTicket.jsp" >showTicket</a> (représente le ticket hors des bornes (par exemple quand on a sa voiture de garée et qu'on part marcher dehors))
+  |-- <a href="src/main/webapp/showTickets.jsp" >showTickets</a> (Partie administrateur : permet de voir tous les tickets enregistrés ainsi que leurs états (payé, sorti, expiré, ...))
+
   |-- <a href="src/main/webapp/default.css" >default.css</a> (feuille de style css)
-  |-- <a href="src/main/webapp/META-INF/MANIFEST.MF" >META-INF/MANIFEST.MF</a> (java manifeste)
-  |-- WEB-INF/web.xml (descripteur standard de l'application Web -- optionnel dans les dernières versions de JavaEE)
-  |-- WEB-INF/lib (librairies supplémentaires java utilisées par les classes java)
-  |-- WEB-INF/classes (classes java : servlet / EJB / entités JPA)
-                |-- <a href="src/main/resources/META-INF/persistence.xml" >META-INF/persistence.xml</a> (descripteur standard JPA)
-                |-- META-INF/orm.xml (descripteur optionnel pour le mapping objet-relationnel -- absent ici)
-                |-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/AddMesureServlet.java" >fr/usmb/m2isc/mesure/servlet/AddMesureServlet.class</a> (ajout d'une mesure)
-                |-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/ShowMesureServlet.java" >fr/usmb/m2isc/mesure/servlet/ShowMesureServlet.class</a> (affichage d'une mesure à partir de son id)
-                |-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/ShowMesuresServlet.java" >fr/usmb/m2isc/mesure/servlet/ShowMesuresServlet.class</a> (affichage des mesures d'une pièce)
-                |-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/ShowLastMesureServlet.java" >fr/usmb/m2isc/mesure/servlet/ShowLastMesureServlet.class</a> (affichage de la dernière mesure d'une pièce)
-                |-- <a href="src/main/java/fr/usmb/m2isc/mesure/servlet/ShowLastMesuresServlet.java" >fr/usmb/m2isc/mesure/servlet/ShowLastMesuresServlet.class</a> (affichage de la dernière mesure de chaque pièce)
-                |-- <a href="src/main/java/fr/usmb/m2isc/mesure/ejb/MesureEJB.java" >fr/usmb/m2isc/mesure/ejb/MesureEJB.class</a> (EJB sans état)
-                |-- <a href="src/main/java/fr/usmb/m2isc/mesure/jpa/Mesure.java" >fr/usmb/m2isc/mesure/jpa/Mesure.class</a> (entité Mesure (entité JPA))
+  |-- <a href="src/main/webapp/META-INF/MANIFEST.MF" >MANIFEST.MF</a> (java manifest)
+
+                |-- <a href="src/main/resources/META-INF/persistence.xml" >Fichier persistence</a> (descripteur standard JPA)
+                
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/AllerBorneSortie.java" >AllerBorneSortie</a> (Aller à la borne de sortie)
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/AllerPayer.java" >AllerPayer</a> (Aller payer à la borne de paiement)
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/ContinuerStationnement.java" >ContinuerStationnement</a> (Quitter la borne de paiement car on a pas fini de stationner)
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/CreateTicket.java" >CreateTicket</a> (Créer un ticket et entrer dans le parking)
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/ImprimerJustif.java" >ImprimerJustif</a> (Impression d'un justificatif)
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/MenuExt.java" >MenuExt</a> (Sortir du parking (ou au moins tenter de...))
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/Payer.java" >Payer</a> (Payer le ticket)
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/SortirParking.java" >SortirParking</a> (Aller à la sortie du parking)
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/servlet/VoirAdmin.java" >VoirAdmin</a> (Voir le menu administrateur (menu qui affiche l'état de tous les tickets et des informations complémentaires))
+                
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/ejb/TicketEJB.java" >TicketEJB</a> EJB sans état (Stateless)
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/ejb/PaiementEJB.java" >PaiementEJB</a> EJB sans état (Stateless)
+                
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/jpa/Ticket.java" >Ticket</a> (implantation de l'entité _Ticket_ (entité JPA))
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/jpa/Paiement.java" >Paiement</a> (implantation de l'entité _Paiement_ (entité JPA))
+
+                |-- <a href="src/main/java/fr/usmb/tp/negro/salihi/ticket/Constantes.java" >Constantes</a> (Constantes du fonctionnement du parking modifiables)
 </pre>
 
 ## Usage : ##
@@ -150,8 +212,8 @@ Cela devrait permettre la création d'un projet (ou module) web.
 
 La compilation des classes et la création de l'archive war peut se faire via gradle en appelant la tâche `build` sur le projet principal.
 
-Pour utiliser l'exemple il suffit de déployer le fichier _Thermo.war_ sur un serveur JavaEE 8. 
-Le client Web est alors déployé avec le préfixe _/Thermo_.
+Pour utiliser l'exemple il suffit de déployer le fichier _INFO706TP.war_ sur un serveur JavaEE 8. 
+Le client Web est alors déployé avec le préfixe _/INFO706TP_.
 
 ## Documentation : ##
 
